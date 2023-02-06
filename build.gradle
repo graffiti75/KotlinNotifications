@@ -1,0 +1,45 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+
+    ext {
+        version_gradle = '7.3.1'
+        version_kotlin = "1.7.20"
+        version_core = "1.9.0"
+        version_constraint_layout = "2.2.0-alpha06"
+        version_lifecycle = "2.5.1"
+        version_work = "2.7.1"
+        version_appcompat = "1.2.0"
+        version_firebase_core = '21.1.1'
+        version_firebase_iid = '21.1.0'
+        version_firebase_messaging = '23.1.1'
+        version_junit = '4.13.2'
+        version_test_runner = '1.5.2'
+        version_test_ext = '1.1.5'
+        version_espresso_core = '3.5.1'
+        version_material = '1.8.0'
+    }
+
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "com.android.tools.build:gradle:$version_gradle"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$version_kotlin"
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
