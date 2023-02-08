@@ -16,7 +16,9 @@
 
 package com.example.android.eggtimernotifications.util
 
+import android.os.Build
 import android.text.format.DateUtils
+import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 
@@ -29,4 +31,9 @@ import androidx.databinding.BindingAdapter
 fun TextView.setElapsedTime(value: Long) {
     val seconds = value / 1000
     text = if (seconds < 60) seconds.toString() else DateUtils.formatElapsedTime(seconds)
+}
+
+@BindingAdapter("goneIfBelowApi33")
+fun goneIfBelowApi33(view: View, below: Boolean) {
+    view.visibility = if (below) View.GONE else View.VISIBLE
 }

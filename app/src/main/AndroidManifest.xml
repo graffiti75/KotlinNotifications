@@ -2,7 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android.eggtimernotifications">
 
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/egg_icon"
         android:label="@string/app_name"
@@ -22,7 +26,7 @@
         <receiver
             android:name=".receiver.AlarmReceiver"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"/>
         <receiver
             android:name=".receiver.SnoozeReceiver"
             android:enabled="true"

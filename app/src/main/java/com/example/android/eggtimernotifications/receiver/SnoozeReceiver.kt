@@ -23,9 +23,11 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
+import android.provider.Settings
 import android.text.format.DateUtils
 import androidx.core.app.AlarmManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 
 class SnoozeReceiver: BroadcastReceiver() {
     private val REQUEST_CODE = 0
@@ -33,14 +35,21 @@ class SnoozeReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val triggerTime = SystemClock.elapsedRealtime() + DateUtils.MINUTE_IN_MILLIS
 
+        var intentFlagTypeUpdateCurrent = PendingIntent.FLAG_UPDATE_CURRENT
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            intentFlagTypeUpdateCurrent = PendingIntent.FLAG_IMMUTABLE
+        }
+
         val notifyIntent = Intent(context, AlarmReceiver::class.java)
         val notifyPendingIntent = PendingIntent.getBroadcast(
             context,
             REQUEST_CODE,
             notifyIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            intentFlagTypeUpdateCurrent
         )
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        checkAlarmPermission(alarmManager, context)
+
         AlarmManagerCompat.setExactAndAllowWhileIdle(
             alarmManager,
             AlarmManager.ELAPSED_REALTIME_WAKEUP,
@@ -53,5 +62,18 @@ class SnoozeReceiver: BroadcastReceiver() {
             NotificationManager::class.java
         ) as NotificationManager
         notificationManager.cancelAll()
+    }
+
+    private fun checkAlarmPermission(alarmManager: AlarmManager, context: Context) {
+        var hasPermission = true
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            hasPermission = alarmManager.canScheduleExactAlarms()
+        }
+        if (!hasPermission) {
+            val intent = Intent().apply {
+                action = Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
+            }
+            startActivity(context, intent, null)
+        }
     }
 }

@@ -21,6 +21,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
+import com.example.android.eggtimernotifications.MyApplication
 import com.example.android.eggtimernotifications.R
 import com.example.android.eggtimernotifications.util.sendNotification
 
@@ -31,14 +32,28 @@ class AlarmReceiver: BroadcastReceiver() {
 //        Toast.makeText(context, context.getText(R.string.eggs_ready), Toast.LENGTH_SHORT).show()
 
         // TODO: Step 1.9 add call to sendNotification
-        val notificationManager = ContextCompat.getSystemService(
-            context,
-            NotificationManager::class.java
-        ) as NotificationManager
+        if ((context.applicationContext as MyApplication).hasNotificationPermission) {
+            val notificationManager = ContextCompat.getSystemService(
+                context,
+                NotificationManager::class.java
+            ) as NotificationManager
 
-        notificationManager.sendNotification(
-            context.getText(R.string.eggs_ready).toString(),
-            context
-        )
+            notificationManager.sendNotification(
+                context.getText(R.string.eggs_ready).toString(),
+                context
+            )
+        }
     }
+
+    /*
+    override fun onReceive(context: Context, intent: Intent) {
+        when (intent.action) {
+            AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED -> {
+                // reschedule all the exact alarms
+                Toast.makeText(context, context.getText(R.string.eggs_ready), Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+    }
+     */
 }

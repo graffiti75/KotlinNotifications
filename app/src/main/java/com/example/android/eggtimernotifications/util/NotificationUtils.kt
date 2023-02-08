@@ -27,15 +27,16 @@ import com.example.android.eggtimernotifications.R
 import com.example.android.eggtimernotifications.receiver.SnoozeReceiver
 
 // Notification ID.
-private val NOTIFICATION_ID = 0
-private val REQUEST_CODE = 0
-private val FLAGS = 0
+private const val NOTIFICATION_ID = 0
+private const val REQUEST_CODE = 0
+//private val FLAGS = 0
 
 // TODO: Step 1.1 extension function to send messages (GIVEN)
 /**
  * Builds and delivers the notification.
  *
- * @param context, activity context.
+ * @param messageBody the message to be showed.
+ * @param applicationContext activity context.
  */
 fun NotificationManager.sendNotification(messageBody: String, applicationContext: Context) {
     // Create the content intent for the notification, which launches
@@ -43,12 +44,17 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
     // TODO: Step 1.11 create intent
 	val contentIntent = Intent(applicationContext, MainActivity::class.java)
 
+	var intentFlagTypeUpdateCurrent = PendingIntent.FLAG_UPDATE_CURRENT
+	if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+		intentFlagTypeUpdateCurrent = PendingIntent.FLAG_IMMUTABLE
+	}
+
     // TODO: Step 1.12 create PendingIntent
 	val contentPendingIntent = PendingIntent.getActivity(
 		applicationContext,
 		NOTIFICATION_ID,
 		contentIntent,
-		PendingIntent.FLAG_UPDATE_CURRENT
+		intentFlagTypeUpdateCurrent
 	)
 
     // TODO: Step 2.0 add style
@@ -61,12 +67,17 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
 		.bigLargeIcon(null)
 
     // TODO: Step 2.2 add snooze action
+	var intentFlagTypeFlags = 0
+	if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+		intentFlagTypeFlags = PendingIntent.FLAG_IMMUTABLE
+	}
 	val snoozeIntent = Intent(applicationContext, SnoozeReceiver::class.java)
 	val snoozePendingIntent: PendingIntent = PendingIntent.getBroadcast(
 		applicationContext,
 		REQUEST_CODE,
 		snoozeIntent,
-		FLAGS
+//		FLAGS
+		intentFlagTypeFlags
 	)
 
     // TODO: Step 1.2 get an instance of NotificationCompat.Builder
@@ -99,7 +110,7 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
 		)
 
         // TODO: Step 2.5 set priority
-
+		.setPriority(NotificationCompat.PRIORITY_HIGH)
     // TODO: Step 1.4 call notify
 	notify(NOTIFICATION_ID, builder.build())
 }
