@@ -84,6 +84,12 @@ class EggTimerFragment : Fragment() {
 			getString(R.string.egg_notification_channel_name)
 		)
 
+		// TODO: Step 3.1 create a new channel for FCM
+		createChannel(
+			getString(R.string.breakfast_notification_channel_id),
+			getString(R.string.breakfast_notification_channel_name)
+		)
+
 		initNotificationManager()
 		requestPermissionListener()
 
